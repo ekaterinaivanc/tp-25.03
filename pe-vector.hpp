@@ -20,7 +20,7 @@ namespace knk {
 
 template< class T >
 size_t knk::Vector< T >::getSize() const noexcept {
-  return -1;
+  return size_;
 }
 
 template< class T >
