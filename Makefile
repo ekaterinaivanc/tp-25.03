@@ -8,6 +8,8 @@ $(UNIT_TESTS): $(OBJS)
 	clang++ -o $@ $^
 
 clean:
-	$(RM) $(UNIT_TESTS) $(OBJS) $(DEPS)
+	-@$(RM) $(UNIT_TESTS)
+	-$(RM) $(DEPS)
+	@$(RM) $(OBJS)
 
 -include main.d
