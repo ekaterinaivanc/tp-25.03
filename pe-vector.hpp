@@ -18,6 +18,11 @@ namespace knk {
 }
 
 template< class T >
+bool knk::Vector< T >::isEmpty() const noexcept {
+  return false;
+}
+
+template< class T >
 knk::Vector< T >::~Vector() {
   delete {} data_;
 }
