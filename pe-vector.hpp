@@ -2,12 +2,16 @@
 #define PE_VECTOR_HPP
 #include <cstddef>
 
-namespace knk
-{
+namespace knk {
   template< class T >
-  struct Vector {
+  class Vector {
+   public:
+    Vector();
+    ~Vector();
+  
+   private:
     T* data;
-    size_t size, capacity;
+    size_t size_, capacity_;
   };
 }
 
