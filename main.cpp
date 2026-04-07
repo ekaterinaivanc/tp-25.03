@@ -51,7 +51,9 @@ int main() {
     { testConstructAndDestruct, "Vector must be default constructable" },
     { testDefaultVectorIsEmpty, "Default constructed vector must be empty" },
     { testSizeOfEmptyVector, "Size of empty vector must be zero" },
-    { testSizeOfNonEmptyVector, "Size of empty vector must be positive" }
+    { testSizeOfNonEmptyVector, "Size of empty vector must be positive" },
+    { testPushBackOfVector, "pushBack must increase size"},
+    { testPopBackOfVector, "popBack must decrease size"}
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;
