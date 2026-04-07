@@ -17,6 +17,7 @@ namespace knk {
     size_t getSize() const noexcept;
     void pushBack(const T&); //homework
     void popBack(); //homework
+    size_t getCapacity() const noexcept; //+тестирование
   
    private:
     T* data_;
@@ -37,7 +38,7 @@ knk::Vector< T >::Vector(size_t size, const T& value):
 {
   for (size_t i = 0; i < size; ++i)
   {
-    data_[i] value;
+    data_[i] = value;
   }
 }
 
