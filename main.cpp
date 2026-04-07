@@ -44,6 +44,13 @@ bool testPopBackOfVector(const char ** pname) {
   return v.getSize() == size - 1;
 }
 
+bool testGetCapacityOfVector(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v(5, 10);
+  v.pushBack(7);
+  return v.getCapacity() == 10;
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
@@ -52,8 +59,9 @@ int main() {
     { testDefaultVectorIsEmpty, "Default constructed vector must be empty" },
     { testSizeOfEmptyVector, "Size of empty vector must be zero" },
     { testSizeOfNonEmptyVector, "Size of empty vector must be positive" },
-    { testPushBackOfVector, "pushBack must increase size"},
-    { testPopBackOfVector, "popBack must decrease size"}
+    { testPushBackOfVector, "pushBack must increase size" },
+    { testPopBackOfVector, "popBack must decrease size" },
+    { testGetCapacityOfVector, "Capacity must double when size" }
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;

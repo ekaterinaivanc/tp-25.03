@@ -17,7 +17,7 @@ namespace knk {
     size_t getSize() const noexcept;
     void pushBack(const T&);
     void popBack();
-    size_t getCapacity() const noexcept; //+тестирование
+    size_t getCapacity() const noexcept;
   
    private:
     T* data_;
@@ -90,6 +90,11 @@ void knk::Vector< T >::popBack() {
   if (size_) {
     --size_;
   }
+}
+
+template< class T >
+size_t knk::Vector< T >::getCapacity() const noexcept {
+  return capacity_;
 }
 
 #endif
