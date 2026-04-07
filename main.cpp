@@ -28,6 +28,22 @@ bool testSizeOfNonEmptyVector(const char ** pname) {
   return v.getSize() == size;
 }
 
+bool testPushBackOfVector(const char ** pname) {
+  *pname = __func__;
+  constexpr size_t size = 2ull;
+  Vector< int > v(size, 10);
+  v.pushBack(7);
+  return v.getSize() == size + 1;
+}
+
+bool testPopBackOfVector(const char ** pname) {
+  *pname = __func__;
+  constexpr size_t size = 2ull;
+  Vector< int > v(size, 10);
+  v.popBack();
+  return v.getSize() == size - 1;
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
