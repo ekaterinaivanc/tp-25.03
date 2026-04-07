@@ -64,4 +64,32 @@ knk::Vector< T >::Vector() :
   capacity_(0)
 {}
 
+template< class T >
+void knk::Vector< T >::pushBack(const T& rhs) {
+  if (size_ >= capacity_) {
+    size_t newCapacity = (capacity_ == 0) ? 1 : capacity_ * 2;
+    T* newData = new T[newCapacity];
+    try {
+      for (size_t i = 0; i < size_; ++i) {
+        newData[size_] = rhs;
+      }
+    } catch (...) {
+      delete[] newData;
+      throw;
+    }
+    delete[] data_;
+    data_ = newData;
+    capacity_ = newCapacity;
+  }
+  data_[size_++] = rhs;
+}
+
+
+template< class T >
+void knk::Vector< T >::popBack() {
+  if (size_) {
+    --size_;
+  }
+}
+
 #endif
