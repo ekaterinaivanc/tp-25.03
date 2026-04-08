@@ -101,6 +101,7 @@ bool testElementCheckedAccess(const char ** pname) {
   } catch (...) {
     return false;
   }
+  return false;
 }
 
 bool testElementCheckedConstAccess(const char ** pname) {
@@ -124,10 +125,12 @@ bool testElementCheckedOutOfBoundAccess(const char ** pname) {
     return false;
   } catch (std::out_of_range& e) {
     const char * text = e.what();
-    return std::strcmp("id out of bound", text);
-  } catch (...) {
+    return !std::strcmp("id out of bound", text);
     return true;
+  } catch (...) {
+    return false;
   }
+  return false;
 }
 
 bool testElementCheckedOutOfBoundConstAccess(const char ** pname) {
@@ -138,10 +141,11 @@ bool testElementCheckedOutOfBoundConstAccess(const char ** pname) {
     return false;
   } catch (std::out_of_range& e) {
     const char * text = e.what();
-    return std::strcmp("id out of bound", text);
+    return !std::strcmp("id out of bound", text);
   } catch (...) {
-    return true;
+    return false;
   }
+  return false;
 }
 
 int main() {
@@ -159,10 +163,10 @@ int main() {
     { testPopBackOfEmptyVector, "popBack on empty vector must do nothing" },
     { testGetCapacityOfEmptyVector, "Capacity of empty vector must be zero" },
     { testElementCheckedAccess, "Inbound access must return lvalue reference" },
-    { testElementCheckedOutOfBoundAccess, "Out of bound access must generate" },
+    { testElementCheckedOutOfBoundAccess, "Out of bound access must generate exception with specific text" },
     { testCopyConstructor, "Copied vector must be equal to original" },
-    { testElementCheckedConstAccess, "Same as ElementCheckedAccess" },
-    { testElementCheckedOutOfBoundConstAccess, "Same as ElementCheckedOutOfBoundAccess" }
+    { testElementCheckedConstAccess, "Same as ElementCheckedAccess, but const" },
+    { testElementCheckedOutOfBoundConstAccess, "Same as ElementCheckedOutOfBoundAccess, but const" }
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;
