@@ -76,7 +76,7 @@ bool testCopyConstructor(const char ** pname) {
   *pname = __func__;
   Vector< int > v{1, 2};
   Vector< int > yav = v;
-  if (!v.isEmpty() && !yav.isEmpty()) {
+  if (v.isEmpty() && yav.isEmpty()) {
     throw std::logic_error("Vectors expected to be non-empty");
   }
   bool isEqual = yav.getSize() == v.getSize();
@@ -144,6 +144,45 @@ bool testElementCheckedOutOfBoundConstAccess(const char ** pname) {
   }
 }
 
+bool testCopyAssignment(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(1);
+  Vector< int > yav;
+  yav.pushBack(1);
+  yav.pushBack(2);
+  try {
+    yav = v;
+  } catch (...) {
+    return false;
+  }
+  if (v.isEmpty() || yav.isEmpty()) {
+    throw std::logic_error("Vectors must be non-empty");
+  }
+  bool isEqual = yav.getSize() == v.getSize();
+  for (size_t i = 0; isEqual && i < v.getSize(); ++i) {
+    try {
+      isEqual = v.at(i) == yav.at(i);
+    } catch (...) {
+      return false;
+    }
+  }
+  return isEqual;
+}
+
+bool testMoveAssignment(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  Vector< int > yav;
+  yav.pushBack(3);
+  yav.pushBack(4);
+  yav.pushBack(5);
+  yav = std::move(v);
+  return yav.getSize() == 2 && yav[0] == 1 && v.isEmpty();
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
@@ -162,7 +201,9 @@ int main() {
     { testElementCheckedOutOfBoundAccess, "Out of bound access must generate exception with specific text" },
     { testCopyConstructor, "Copied vector must be equal to original" },
     { testElementCheckedConstAccess, "Same as ElementCheckedAccess, but const" },
-    { testElementCheckedOutOfBoundConstAccess, "Same as ElementCheckedOutOfBoundAccess, but const" }
+    { testElementCheckedOutOfBoundConstAccess, "Same as ElementCheckedOutOfBoundAccess, but const" },
+    { testCopyAssignment, "Copy assignment must create equal vector" },
+    { testMoveAssignment, "Move assignment must transfer vector" }
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;

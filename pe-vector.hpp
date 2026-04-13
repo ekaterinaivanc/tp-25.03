@@ -90,7 +90,7 @@ knk::Vector< T >& knk::Vector< T >::operator=(const Vector< T >& rhs) {
     return *this;
   }
   Vector< T > cpy(rhs);
-  sawp(cpy);
+  swap(cpy);
   return *this;
 }
 
@@ -105,7 +105,7 @@ knk::Vector< T >& knk::Vector< T >::operator=(Vector< T >&& rhs) noexcept {
 //дописать тесты
 template< class T > 
 T& knk::Vector< T >::operator[](size_t id) noexcept {
-  return const_cast< T >((*static_cast< const Vector< T >* >(this))[id]);
+  return const_cast< T& >((*static_cast< const Vector< T >* >(this))[id]);
 }
 
 //дописать тесты
@@ -136,7 +136,7 @@ void knk::Vector< T >::pushBack(const T& rhs) {
     T* newData = new T[newCapacity];
     try {
       for (size_t i = 0; i < size_; ++i) {
-        newData[size_] = rhs;
+        newData[i] = data_[i];
       }
     } catch (...) {
       delete[] newData;
