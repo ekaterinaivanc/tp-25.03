@@ -225,6 +225,24 @@ bool testConstBracketAccess(const char ** pname) {
   return r[0] == 1 && r[1] == 2;
 }
 
+bool testAtAccess(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.at(0) = 10;
+  return v.at(0) == 10 && v.at(1) == 2;
+}
+
+bool testConstAtAccess(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  const Vector< int > & r = v;
+  return r.at(0) == 1 && r.at(1) == 2;
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
@@ -249,7 +267,9 @@ int main() {
     { testMoveConstructor, "Move constructor must transfer vector" },
     { testSwap, "Swap must exchange contents of vectors"},
     { testBracketAccess, "operator[] must return lvalue reference" },
-    { testConstBracketAccess, "const operator[] must return const lvalue reference" }
+    { testConstBracketAccess, "const operator[] must return const lvalue reference" },
+    { testAtAccess, "at() must return reference" },
+    { testConstAtAccess, "const at() must return const reference" }
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;
