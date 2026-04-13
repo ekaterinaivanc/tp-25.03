@@ -74,7 +74,9 @@ bool testGetCapacityOfEmptyVector(const char ** pname) {
 
 bool testCopyConstructor(const char ** pname) {
   *pname = __func__;
-  Vector< int > v{1, 2};
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
   Vector< int > yav = v;
   if (v.isEmpty() && yav.isEmpty()) {
     throw std::logic_error("Vectors expected to be non-empty");
@@ -183,6 +185,15 @@ bool testMoveAssignment(const char ** pname) {
   return yav.getSize() == 2 && yav[0] == 1 && v.isEmpty();
 }
 
+bool testMoveConstructor(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  Vector< int > yav = std::move(v);
+  return yav.getSize() == 2 && yav[0] == 1 && v.isEmpty();
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
@@ -203,7 +214,8 @@ int main() {
     { testElementCheckedConstAccess, "Same as ElementCheckedAccess, but const" },
     { testElementCheckedOutOfBoundConstAccess, "Same as ElementCheckedOutOfBoundAccess, but const" },
     { testCopyAssignment, "Copy assignment must create equal vector" },
-    { testMoveAssignment, "Move assignment must transfer vector" }
+    { testMoveAssignment, "Move assignment must transfer vector" },
+    { testMoveConstructor, "Move constructor must transfer vector" } 
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;

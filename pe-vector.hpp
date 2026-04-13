@@ -12,11 +12,11 @@ namespace knk {
     explicit Vector(size_t size);
     Vector(size_t size, const T& value);
   
-    Vector(const Vector< T >& rhs); // дописать тесты
-    Vector(Vector< T >&& rhs) noexcept; //дописать тесты
+    Vector(const Vector< T >& rhs);
+    Vector(Vector< T >&& rhs) noexcept;
 
-    Vector< T >& operator=(const Vector< T >& rhs); //дописать тесты
-    Vector< T >& operator=(Vector< T >&& rhs) noexcept; //дописать тесты
+    Vector< T >& operator=(const Vector< T >& rhs); 
+    Vector< T >& operator=(Vector< T >&& rhs) noexcept; 
 
     T& operator[](size_t id) noexcept; //дописать тесты
     const T& operator[](size_t id) const noexcept; //дописать тесты
@@ -67,7 +67,6 @@ knk::Vector< T >::Vector(size_t size, const T& value):
   }
 }
 
-//дописать тесты
 template< class T >
 knk::Vector< T >::Vector(const Vector< T >& rhs):
   Vector(rhs.getSize())
@@ -77,7 +76,6 @@ knk::Vector< T >::Vector(const Vector< T >& rhs):
     }
   }
 
-//дописать тесты
 template< class T >
 knk::Vector< T >::Vector(Vector< T >&& rhs) noexcept:
   Vector() {
@@ -94,7 +92,6 @@ knk::Vector< T >& knk::Vector< T >::operator=(const Vector< T >& rhs) {
   return *this;
 }
 
-//дописать тесты
 template< class T >
 knk::Vector< T >& knk::Vector< T >::operator=(Vector< T >&& rhs) noexcept {
   Vector< T > cpy(std::move(rhs));
