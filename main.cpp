@@ -207,6 +207,24 @@ bool testSwap(const char ** pname) {
   return v.getSize() == 2 && v[0] == 4 && yav.getSize() == 3 && yav[0] == 1;
 }
 
+bool testBracketAccess(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v[0] = 10;
+  return v[0] == 10 && v[1] == 2;
+}
+
+bool testConstBracketAccess(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  const Vector< int > & r = v;
+  return r[0] == 1 && r[1] == 2;
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
@@ -229,7 +247,9 @@ int main() {
     { testCopyAssignment, "Copy assignment must create equal vector" },
     { testMoveAssignment, "Move assignment must transfer vector" },
     { testMoveConstructor, "Move constructor must transfer vector" },
-    { testSwap, "Swap must exchange contents of vectors"}
+    { testSwap, "Swap must exchange contents of vectors"},
+    { testBracketAccess, "operator[] must return lvalue reference" },
+    { testConstBracketAccess, "const operator[] must return const lvalue reference" }
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;
