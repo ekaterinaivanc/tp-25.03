@@ -194,6 +194,19 @@ bool testMoveConstructor(const char ** pname) {
   return yav.getSize() == 2 && yav[0] == 1 && v.isEmpty();
 }
 
+bool testSwap(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.pushBack(3);
+  Vector< int > yav;
+  yav.pushBack(4);
+  yav.pushBack(5);
+  v.swap(yav);
+  return v.getSize() == 2 && v[0] == 4 && yav.getSize() == 3 && yav[0] == 1;
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
@@ -215,7 +228,8 @@ int main() {
     { testElementCheckedOutOfBoundConstAccess, "Same as ElementCheckedOutOfBoundAccess, but const" },
     { testCopyAssignment, "Copy assignment must create equal vector" },
     { testMoveAssignment, "Move assignment must transfer vector" },
-    { testMoveConstructor, "Move constructor must transfer vector" } 
+    { testMoveConstructor, "Move constructor must transfer vector" },
+    { testSwap, "Swap must exchange contents of vectors"}
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;
