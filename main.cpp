@@ -1,5 +1,6 @@
 #include "pe-vector.hpp"
 #include <iostream>
+#include <cstring>
 
 using   knk::Vector;
 
@@ -23,8 +24,8 @@ bool testSizeOfEmptyVector(const char ** pname) {
 
 bool testSizeOfNonEmptyVector(const char ** pname) {
   *pname = __func__;
-  constexpr size_t size = 2ull;
-  Vector< int > v(2ull, 10);
+  constexpr size_t size = 2;
+  Vector< int > v(size, 10);
   return v.getSize() == size;
 }
 
@@ -73,12 +74,10 @@ bool testGetCapacityOfEmptyVector(const char ** pname) {
 
 bool testCopyConstructor(const char ** pname) {
   *pname = __func__;
-  Vector< int > v; 
-  v.pushBack(1);
-  v.pushBack(2);
+  Vector< int > v{1, 2};
   Vector< int > yav = v;
   if (!v.isEmpty() && !yav.isEmpty()) {
-    throw std::logic_error("Requerements  for vectors is not met");
+    throw std::logic_error("Vectors expected to be non-empty");
   }
   bool isEqual = yav.getSize() == v.getSize();
   for (size_t i = 0; isEqual && i < v.getSize(); ++i) {
@@ -101,7 +100,6 @@ bool testElementCheckedAccess(const char ** pname) {
   } catch (...) {
     return false;
   }
-  return false;
 }
 
 bool testElementCheckedConstAccess(const char ** pname) {
@@ -130,7 +128,6 @@ bool testElementCheckedOutOfBoundAccess(const char ** pname) {
   } catch (...) {
     return false;
   }
-  return false;
 }
 
 bool testElementCheckedOutOfBoundConstAccess(const char ** pname) {
@@ -145,7 +142,6 @@ bool testElementCheckedOutOfBoundConstAccess(const char ** pname) {
   } catch (...) {
     return false;
   }
-  return false;
 }
 
 int main() {
@@ -162,7 +158,7 @@ int main() {
     { testPushBackOfEmptyVector, "pushBack on empty vector must increase size" },
     { testPopBackOfEmptyVector, "popBack on empty vector must do nothing" },
     { testGetCapacityOfEmptyVector, "Capacity of empty vector must be zero" },
-    { testElementCheckedAccess, "Inbound access must return lvalue reference" },
+    { testElementCheckedAccess, "Inbound access must return lvalue reference to indexed value" },
     { testElementCheckedOutOfBoundAccess, "Out of bound access must generate exception with specific text" },
     { testCopyConstructor, "Copied vector must be equal to original" },
     { testElementCheckedConstAccess, "Same as ElementCheckedAccess, but const" },
@@ -178,12 +174,12 @@ int main() {
     } catch (const std::logic_error& e) {
       std::cout << "[NOT RUN]" << testName << "\n";
       std::cout << "\t" << "reason: " << e.what() << "\n";
-      continue;
       ++failed;
+      continue;
     }
     if (!r) {
-        ++failed;
-      std::cout << "Failed: " << testName << "\n";
+      ++failed;
+      std::cout << "[FAIL] " << testName << "\n";
       std:: cout << "\t" << tests[i].second << "\n";
     }
   }
