@@ -358,6 +358,36 @@ bool testInsertIteratorCop(const char ** pname) {
   return v.getSize() == 5 && v[0] == 10 && v[1] == 99 && v[2] == 99 && v[3] == 99 && v[4] == 40 && *it == 99;
 }
 
+bool testEraseIterator(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  for (int i = 0; i < 5; ++i) {
+    v.pushBack(i);
+  }
+  auto it = v.erase(v.begin() + 2);
+  return v.getSize() == 4 && v[0] == 0 && v[1] == 1 && v[2] == 3 && v[3] == 4 && *it == 3;
+}
+
+bool testEraseIteratorRange(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  for (int i = 0; i < 10; ++i) {
+    v.pushBack(i);
+  }
+  auto it = v.erase(v.begin() + 3, v.begin() + 7);
+  return v.getSize() == 6 && v[0] == 0 && v[1] == 1 && v[2] == 2 && v[3] == 7 && v[4] == 8 && v[5] == 9 && *it == 7;
+}
+
+bool testEraseIteratorConstRange(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  for (int i = 0; i < 5; ++i) {
+    v.pushBack(i);
+  }
+  auto it = v.erase(v.cbegin() + 1, v.cbegin() + 3);
+  return v.getSize() == 3 && v[0] == 0 && v[1] == 3 && v[2] == 4 && *it == 3;
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
@@ -393,7 +423,10 @@ int main() {
     { testEraseRange, "Erase range must remove elements" },
     { testInsertIterator, "Insert with iterator must add element at specified position" },
     { testInsertIteratorRange, "Insert range with iterators must add multiple elements" },
-    { testInsertIteratorCop, "Insert copies must add k copies of value" }
+    { testInsertIteratorCop, "Insert copies must add k copies of value" },
+    { testEraseIterator, "Erase with iterator must remove element at specified position" },
+    { testEraseIteratorRange, "Erase range with iterators must remove elements" },
+    { testEraseIteratorConstRange, "Erase range with const iterators must work correctly" }
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;
