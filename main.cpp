@@ -245,7 +245,7 @@ bool testConstAtAccess(const char ** pname) {
 
 bool testInsert(const char ** pname) {
   *pname = __func__;
-  Vector<int> v;
+  Vector< int > v;
   v.pushBack(10);
   v.pushBack(30);
   try {
@@ -258,7 +258,7 @@ bool testInsert(const char ** pname) {
 
 bool testInsertOutOfRange(const char ** pname) {
   *pname = __func__;
-  Vector<int> v(2, 10);
+  Vector< int > v(2, 10);
   try {
     v.insert(5, 99);
     return false;
@@ -271,10 +271,10 @@ bool testInsertOutOfRange(const char ** pname) {
 
 bool testInsertRange(const char ** pname) {
   *pname = __func__;
-  Vector<int> v;
+  Vector< int > v;
   v.pushBack(10);
   v.pushBack(50);
-  Vector<int> toInsert;
+  Vector< int > toInsert;
   toInsert.pushBack(20);
   toInsert.pushBack(30);
   toInsert.pushBack(40);
@@ -288,7 +288,7 @@ bool testInsertRange(const char ** pname) {
 
 bool testErase(const char ** pname) {
   *pname = __func__;
-  Vector<int> v;
+  Vector< int > v;
   for (int i = 0; i < 5; ++i) {
     v.pushBack(i);
   }
@@ -302,7 +302,7 @@ bool testErase(const char ** pname) {
 
 bool testEraseOutOfRange(const char ** pname) {
   *pname = __func__;
-  Vector<int> v(2, 10);
+  Vector< int > v(2, 10);
   try {
     v.erase(5);
     return false;
@@ -315,7 +315,7 @@ bool testEraseOutOfRange(const char ** pname) {
 
 bool testEraseRange(const char ** pname) {
   *pname = __func__;
-  Vector<int> v;
+  Vector< int > v;
   for (int i = 0; i < 10; ++i) {
     v.pushBack(i);
   }
@@ -325,6 +325,37 @@ bool testEraseRange(const char ** pname) {
   } catch (...) {
     return false;
   }
+}
+
+bool testInsertIterator(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(10);
+  v.pushBack(30);
+  auto it = v.insert(v.begin() + 1, 20);
+  return v.getSize() == 3 && v[0] == 10 && v[1] == 20 && v[2] == 30 && *it == 20;
+}
+
+bool testInsertIteratorRange(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(10);
+  v.pushBack(50);
+  Vector< int > toInsert;
+  toInsert.pushBack(20);
+  toInsert.pushBack(30);
+  toInsert.pushBack(40);
+  auto it = v.insert(v.begin() + 1, toInsert.cbegin(), toInsert.cend());
+  return v.getSize() == 5 && v[0] == 10 && v[1] == 20 && v[2] == 30 && v[3] == 40 && v[4] == 50 && *it == 20;
+}
+
+bool testInsertIteratorCop(const char ** pname) {
+  *pname = __func__;
+  Vector< int > v;
+  v.pushBack(10);
+  v.pushBack(40);
+  auto it = v.insert(v.begin() + 1, 3, 99);
+  return v.getSize() == 5 && v[0] == 10 && v[1] == 99 && v[2] == 99 && v[3] == 99 && v[4] == 40 && *it == 99;
 }
 
 int main() {
@@ -359,7 +390,10 @@ int main() {
     { testInsertRange, "Insert range must add multiple elements" },
     { testErase, "Erase must remove element at specified position" },
     { testEraseOutOfRange, "Erase must throw exception when index is out of range" },
-    { testEraseRange, "Erase range must remove elements" }
+    { testEraseRange, "Erase range must remove elements" },
+    { testInsertIterator, "Insert with iterator must add element at specified position" },
+    { testInsertIteratorRange, "Insert range with iterators must add multiple elements" },
+    { testInsertIteratorCop, "Insert copies must add k copies of value" }
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;

@@ -6,7 +6,7 @@
 namespace knk {
 
   template< class T > class Vector;
-  
+
   template< class T >
   class Iterator {
   public:
@@ -16,6 +16,8 @@ namespace knk {
     T& operator*() const;
     bool operator==(const Iterator<T>& other) const;
     bool operator!=(const Iterator<T>& other) const;
+    Iterator operator+(size_t n) const;
+    Iterator operator-(size_t n) const;
     Vector<T>& vector;
     size_t id;
   };
@@ -29,6 +31,8 @@ namespace knk {
     const T& operator*() const;
     bool operator==(const CIterator<T>& other) const;
     bool operator!=(const CIterator<T>& other) const;
+    CIterator operator+(size_t n) const;
+    CIterator operator-(size_t n) const;
     const Vector<T>& vector;
     size_t id;
   };
@@ -70,6 +74,8 @@ namespace knk {
     Iterator<T> end();
     CIterator<T> begin() const;
     CIterator<T> end() const;
+    CIterator<T> cbegin() const;
+    CIterator<T> cend() const;
     
     Iterator<T> insert(Iterator<T> pos, const T& value);
     Iterator<T> insert(Iterator<T> pos, CIterator<T> beg, CIterator<T> end);
@@ -237,7 +243,7 @@ void knk::Vector< T >::insert(size_t id, const T& t) {
   if (id > size_) {
     throw std::out_of_range("Index out of range");
   }
-  Vector<T> temp;
+  Vector< T > temp;
   for (size_t i = 0; i < id; ++i) {
     temp.pushBack(data_[i]);
   }
@@ -256,7 +262,7 @@ void knk::Vector< T >::insert(size_t id, const Vector< T >& rhs, size_t beg, siz
   if (beg > end || end > rhs.getSize()) {
     throw std::out_of_range("Range is invalid");
   }
-  Vector<T> temp;
+  Vector< T > temp;
   size_t count = end - beg;
   for (size_t i = 0; i < id; ++i) {
     temp.pushBack(data_[i]);
@@ -275,7 +281,7 @@ void knk::Vector< T >::erase(size_t id) {
   if (id >= size_) {
     throw std::out_of_range("Index out of range");
   }
-  Vector<T> temp;
+  Vector< T > temp;
   for (size_t i = 0; i < id; ++i) {
     temp.pushBack(data_[i]);
   }
@@ -290,7 +296,7 @@ void knk::Vector< T >::erase(size_t beg, size_t end) {
   if (beg > end || end > size_) {
     throw std::out_of_range("Range is invalid");
   }
-  Vector<T> temp;
+  Vector< T > temp;
   for (size_t i = 0; i < beg; ++i) {
     temp.pushBack(data_[i]);
   }
@@ -301,87 +307,164 @@ void knk::Vector< T >::erase(size_t beg, size_t end) {
 }
 
 template< class T >
-knk::Iterator<T>::Iterator(knk::Vector<T>& vec, size_t idx) :
+knk::Iterator< T >::Iterator(knk::Vector< T >& vec, size_t idx) :
   vector(vec), id(idx)
 {}
 
 template< class T >
-knk::Iterator<T>& knk::Iterator<T>::operator+=(size_t n) {
+knk::Iterator< T >& knk::Iterator< T >::operator+=(size_t n) {
   id += n;
   return *this;
 }
 
 template< class T >
-knk::Iterator<T>& knk::Iterator<T>::operator-=(size_t n) {
+knk::Iterator< T >& knk::Iterator< T >::operator-=(size_t n) {
   id -= n;
   return *this;
 }
 
 template< class T >
-T& knk::Iterator<T>::operator*() const {
+T& knk::Iterator< T >::operator*() const {
   return vector[id];
 }
 
 template< class T >
-bool knk::Iterator<T>::operator==(const Iterator<T>& other) const {
+bool knk::Iterator< T >::operator==(const Iterator< T >& other) const {
   return id == other.id;
 }
 
 template< class T >
-bool knk::Iterator<T>::operator!=(const Iterator<T>& other) const {
+bool knk::Iterator< T >::operator!=(const Iterator< T >& other) const {
   return id != other.id;
 }
 
 template< class T >
-knk::CIterator<T>::CIterator(const knk::Vector<T>& vec, size_t idx) :
+knk::CIterator< T >::CIterator(const knk::Vector< T >& vec, size_t idx) :
   vector(vec), id(idx)
 {}
 
 template< class T >
-knk::CIterator<T>& knk::CIterator<T>::operator+=(size_t n) {
+knk::CIterator< T >& knk::CIterator< T >::operator+=(size_t n) {
   id += n;
   return *this;
 }
 
 template< class T >
-knk::CIterator<T>& knk::CIterator<T>::operator-=(size_t n) {
+knk::CIterator< T >& knk::CIterator< T >::operator-=(size_t n) {
   id -= n;
   return *this;
 }
 
 template< class T >
-const T& knk::CIterator<T>::operator*() const {
+const T& knk::CIterator< T >::operator*() const {
   return vector[id];
 }
 
 template< class T >
-bool knk::CIterator<T>::operator==(const CIterator<T>& other) const {
+bool knk::CIterator< T >::operator==(const CIterator< T >& other) const {
   return id == other.id;
 }
 
 template< class T >
-bool knk::CIterator<T>::operator!=(const CIterator<T>& other) const {
+bool knk::CIterator< T >::operator!=(const CIterator< T >& other) const {
   return id != other.id;
 }
 
 template< class T >
-knk::Iterator<T> knk::Vector<T>::begin() {
-  return Iterator<T>(*this, 0);
+knk::Iterator<T> knk::Iterator<T>::operator+(size_t n) const {
+  return knk::Iterator<T>(vector, id + n);
 }
 
 template< class T >
-knk::Iterator<T> knk::Vector<T>::end() {
+knk::Iterator<T> knk::Iterator<T>::operator-(size_t n) const {
+  return knk::Iterator<T>(vector, id - n);
+}
+
+template< class T >
+knk::CIterator<T> knk::CIterator<T>::operator+(size_t n) const {
+  return knk::CIterator<T>(vector, id + n);
+}
+
+template< class T >
+knk::CIterator<T> knk::CIterator<T>::operator-(size_t n) const {
+  return knk::CIterator<T>(vector, id - n);
+}
+
+template< class T >
+knk::Iterator< T > knk::Vector< T >::begin() {
+  return Iterator< T >(*this, 0);
+}
+
+template< class T >
+knk::Iterator< T > knk::Vector< T >::end() {
   return Iterator<T>(*this, size_);
 }
 
 template< class T >
-knk::CIterator<T> knk::Vector<T>::begin() const {
+knk::CIterator< T > knk::Vector< T >::begin() const {
   return CIterator<T>(*this, 0);
 }
 
 template< class T >
-knk::CIterator<T> knk::Vector<T>::end() const {
+knk::CIterator< T > knk::Vector< T >::end() const {
   return CIterator<T>(*this, size_);
+}
+
+template< class T >
+knk::CIterator< T > knk::Vector< T >::cbegin() const {
+  return CIterator< T >(*this, 0);
+}
+
+template< class T >
+knk::CIterator< T > knk::Vector< T >::cend() const {
+  return CIterator< T >(*this, size_);
+}
+
+template< class T >
+knk::Iterator<  T> knk::Vector< T >::insert(Iterator< T > pos, const T& value) {
+  size_t index = pos.id;
+  insert(index, value);
+  return Iterator<T>(*this, index);
+}
+
+template< class T >
+knk::Iterator< T > knk::Vector< T >::insert(Iterator< T > pos, CIterator< T > beg, CIterator< T > end) {
+  if (beg.id == end.id) {
+    return pos;
+  }
+  size_t index = pos.id;
+  Vector< T > temp;
+  for (size_t i = 0; i < index; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  for (size_t i = beg.id; i < end.id; ++i) {
+    temp.pushBack(beg.vector[i]);
+  }
+  for (size_t i = index; i < size_; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  swap(temp);
+  return Iterator< T >(*this, index);
+}
+
+template< class T >
+knk::Iterator< T > knk::Vector< T >::insert(Iterator< T > pos, size_t count, const T& value) {
+  if (count == 0) {
+    return pos;
+  }
+  size_t index = pos.id;
+  Vector< T >  temp;
+  for (size_t i = 0; i < index; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  for (size_t i = 0; i < count; ++i) {
+    temp.pushBack(value);
+  }
+  for (size_t i = index; i < size_; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  swap(temp);
+  return Iterator< T >(*this, index);
 }
 
 #endif
