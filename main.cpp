@@ -243,6 +243,49 @@ bool testConstAtAccess(const char ** pname) {
   return r.at(0) == 1 && r.at(1) == 2;
 }
 
+bool testInsert(const char ** pname) {
+  *pname = __func__;
+  Vector<int> v;
+  v.pushBack(10);
+  v.pushBack(30);
+  try {
+    v.insert(1, 20);
+    return v.getSize() == 3 && v[0] == 10 && v[1] == 20 && v[2] == 30;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool testInsertOutOfRange(const char ** pname) {
+  *pname = __func__;
+  Vector<int> v(2, 10);
+  try {
+    v.insert(5, 99);
+    return false;
+  } catch (const std::out_of_range&) {
+    return true;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool testInsertRange(const char ** pname) {
+  *pname = __func__;
+  Vector<int> v;
+  v.pushBack(10);
+  v.pushBack(50);
+  Vector<int> toInsert;
+  toInsert.pushBack(20);
+  toInsert.pushBack(30);
+  toInsert.pushBack(40);
+  try {
+    v.insert(1, toInsert, 0, 3);
+    return v.getSize() == 5 && v[1] == 20 && v[2] == 30 && v[3] == 40;
+  } catch (...) {
+    return false;
+  }
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
@@ -269,7 +312,10 @@ int main() {
     { testBracketAccess, "operator[] must return lvalue reference" },
     { testConstBracketAccess, "const operator[] must return const lvalue reference" },
     { testAtAccess, "at() must return reference" },
-    { testConstAtAccess, "const at() must return const reference" }
+    { testConstAtAccess, "const at() must return const reference" },
+    { testInsert, "Insert must add element at specified position" },
+    { testInsertOutOfRange, "Insert out of range must throw exception" },
+    { testInsertRange, "Insert range must add multiple elements" }
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;

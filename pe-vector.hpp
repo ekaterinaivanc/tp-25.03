@@ -18,8 +18,8 @@ namespace knk {
     Vector< T >& operator=(const Vector< T >& rhs); 
     Vector< T >& operator=(Vector< T >&& rhs) noexcept; 
 
-    T& operator[](size_t id) noexcept; //дописать тесты
-    const T& operator[](size_t id) const noexcept; //дописать тесты
+    T& operator[](size_t id) noexcept; 
+    const T& operator[](size_t id) const noexcept; 
 
     bool isEmpty() const noexcept;
     size_t getSize() const noexcept;
@@ -28,9 +28,15 @@ namespace knk {
     void popBack();
     void pushFront(const T& v);
 
-    void swap(Vector< T >& rhs) noexcept; //дописать тесты
-    T& at(size_t id); //дописать тесты
-    const T& at(size_t id) const; //дописать тесты
+    void swap(Vector< T >& rhs) noexcept; 
+    T& at(size_t id); 
+    const T& at(size_t id) const; 
+
+    //copy-and-swap + тесты
+    void insert(size_t id, const T& t);
+    void insert(size_t id, const Vector< T >& rhs, size_t beg, size_t end);
+    void erase(size_t id);
+    void erase(size_t beg, size_t end);
 
    private:
     T* data_;
@@ -99,13 +105,11 @@ knk::Vector< T >& knk::Vector< T >::operator=(Vector< T >&& rhs) noexcept {
   return *this;
 }
 
-//дописать тесты
 template< class T > 
 T& knk::Vector< T >::operator[](size_t id) noexcept {
   return const_cast< T& >((*static_cast< const Vector< T >* >(this))[id]);
 }
 
-//дописать тесты
 template< class T > 
 const T& knk::Vector< T >::operator[](size_t id) const noexcept {
   return data_[id];
@@ -164,7 +168,6 @@ void knk::Vector< T >::pushFront(const T& t) {
   swap(v);
 }
 
-//дописать тесты
 template< class T >
 void knk::Vector< T >::swap(Vector< T >& rhs) noexcept {
   std::swap(data_, rhs.data_);
@@ -188,11 +191,43 @@ const T& knk::Vector< T >::at(size_t id) const {
   throw std::out_of_range("id out of bound");
 }
 
-//copy-and-swap + тесты
-//void insert(size_t id, const T& t)
-//void insert(size_t id, const Vector< T >& rhs, size_t beg, size_t end)
-//void erase(size_t id)
-//void erase(size_t beg, size_t end)
+template< class T >
+void knk::Vector< T >::insert(size_t id, const T& t) {
+  if (id > size_) {
+    throw std::out_of_range("Index out of range");
+  }
+  Vector<T> temp;
+  for (size_t i = 0; i < id; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  temp.pushBack(t);
+  for (size_t i = id; i < size_; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  swap(temp);
+}
+
+template< class T >
+void knk::Vector< T >::insert(size_t id, const Vector< T >& rhs, size_t beg, size_t end) {
+  if (id > size_) {
+    throw std::out_of_range("Index out of range");
+  }
+  if (beg > end || end > rhs.getSize()) {
+    throw std::out_of_range("Range is invalid");
+  }
+  Vector<T> temp;
+  size_t count = end - beg;
+  for (size_t i = 0; i < id; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  for (size_t i = beg; i < end; ++i) {
+    temp.pushBack(rhs[i]);
+  }
+  for (size_t i = id; i < size_; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  swap(temp);
+}
 
 //итераторы вектора(const и не const, random access (без тестов))
 //придумать еще 3 erase insert с итераторами (всего 6) например:
