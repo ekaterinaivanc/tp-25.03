@@ -4,6 +4,35 @@
 #include <stdexcept>
 
 namespace knk {
+
+  template< class T > class Vector;
+  
+  template< class T >
+  class Iterator {
+  public:
+    Iterator(Vector<T>& vec, size_t idx);
+    Iterator& operator+=(size_t n);
+    Iterator& operator-=(size_t n);
+    T& operator*() const;
+    bool operator==(const Iterator<T>& other) const;
+    bool operator!=(const Iterator<T>& other) const;
+    Vector<T>& vector;
+    size_t id;
+  };
+
+  template< class T >
+  class CIterator {
+  public:
+    CIterator(const Vector<T>& vec, size_t idx);
+    CIterator& operator+=(size_t n);
+    CIterator& operator-=(size_t n);
+    const T& operator*() const;
+    bool operator==(const CIterator<T>& other) const;
+    bool operator!=(const CIterator<T>& other) const;
+    const Vector<T>& vector;
+    size_t id;
+  };
+
   template< class T >
   class Vector {
    public:
@@ -32,11 +61,23 @@ namespace knk {
     T& at(size_t id); 
     const T& at(size_t id) const; 
 
-    //copy-and-swap + тесты
     void insert(size_t id, const T& t);
     void insert(size_t id, const Vector< T >& rhs, size_t beg, size_t end);
     void erase(size_t id);
     void erase(size_t beg, size_t end);
+
+    Iterator<T> begin();
+    Iterator<T> end();
+    CIterator<T> begin() const;
+    CIterator<T> end() const;
+    
+    Iterator<T> insert(Iterator<T> pos, const T& value);
+    Iterator<T> insert(Iterator<T> pos, CIterator<T> beg, CIterator<T> end);
+    Iterator<T> insert(Iterator<T> pos, size_t count, const T& value);
+    
+    Iterator<T> erase(Iterator<T> pos);
+    Iterator<T> erase(Iterator<T> beg, Iterator<T> end);
+    Iterator<T> erase(CIterator<T> beg, CIterator<T> end);
 
    private:
     T* data_;
@@ -259,10 +300,88 @@ void knk::Vector< T >::erase(size_t beg, size_t end) {
   swap(temp);
 }
 
-//итераторы вектора(const и не const, random access (без тестов))
-//придумать еще 3 erase insert с итераторами (всего 6) например:
-//struct VectorIteraor {}
-//template< class FwdIterator >
-//void insert(VectorIterator pos, FwdIterator begin, FwdIterator end)
+template< class T >
+knk::Iterator<T>::Iterator(knk::Vector<T>& vec, size_t idx) :
+  vector(vec), id(idx)
+{}
+
+template< class T >
+knk::Iterator<T>& knk::Iterator<T>::operator+=(size_t n) {
+  id += n;
+  return *this;
+}
+
+template< class T >
+knk::Iterator<T>& knk::Iterator<T>::operator-=(size_t n) {
+  id -= n;
+  return *this;
+}
+
+template< class T >
+T& knk::Iterator<T>::operator*() const {
+  return vector[id];
+}
+
+template< class T >
+bool knk::Iterator<T>::operator==(const Iterator<T>& other) const {
+  return id == other.id;
+}
+
+template< class T >
+bool knk::Iterator<T>::operator!=(const Iterator<T>& other) const {
+  return id != other.id;
+}
+
+template< class T >
+knk::CIterator<T>::CIterator(const knk::Vector<T>& vec, size_t idx) :
+  vector(vec), id(idx)
+{}
+
+template< class T >
+knk::CIterator<T>& knk::CIterator<T>::operator+=(size_t n) {
+  id += n;
+  return *this;
+}
+
+template< class T >
+knk::CIterator<T>& knk::CIterator<T>::operator-=(size_t n) {
+  id -= n;
+  return *this;
+}
+
+template< class T >
+const T& knk::CIterator<T>::operator*() const {
+  return vector[id];
+}
+
+template< class T >
+bool knk::CIterator<T>::operator==(const CIterator<T>& other) const {
+  return id == other.id;
+}
+
+template< class T >
+bool knk::CIterator<T>::operator!=(const CIterator<T>& other) const {
+  return id != other.id;
+}
+
+template< class T >
+knk::Iterator<T> knk::Vector<T>::begin() {
+  return Iterator<T>(*this, 0);
+}
+
+template< class T >
+knk::Iterator<T> knk::Vector<T>::end() {
+  return Iterator<T>(*this, size_);
+}
+
+template< class T >
+knk::CIterator<T> knk::Vector<T>::begin() const {
+  return CIterator<T>(*this, 0);
+}
+
+template< class T >
+knk::CIterator<T> knk::Vector<T>::end() const {
+  return CIterator<T>(*this, size_);
+}
 
 #endif
