@@ -229,6 +229,36 @@ void knk::Vector< T >::insert(size_t id, const Vector< T >& rhs, size_t beg, siz
   swap(temp);
 }
 
+template< class T >
+void knk::Vector< T >::erase(size_t id) {
+  if (id >= size_) {
+    throw std::out_of_range("Index out of range");
+  }
+  Vector<T> temp;
+  for (size_t i = 0; i < id; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  for (size_t i = id + 1; i < size_; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  swap(temp);
+}
+
+template< class T >
+void knk::Vector< T >::erase(size_t beg, size_t end) {
+  if (beg > end || end > size_) {
+    throw std::out_of_range("Range is invalid");
+  }
+  Vector<T> temp;
+  for (size_t i = 0; i < beg; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  for (size_t i = end; i < size_; ++i) {
+    temp.pushBack(data_[i]);
+  }
+  swap(temp);
+}
+
 //итераторы вектора(const и не const, random access (без тестов))
 //придумать еще 3 erase insert с итераторами (всего 6) например:
 //struct VectorIteraor {}

@@ -286,6 +286,47 @@ bool testInsertRange(const char ** pname) {
   }
 }
 
+bool testErase(const char ** pname) {
+  *pname = __func__;
+  Vector<int> v;
+  for (int i = 0; i < 5; ++i) {
+    v.pushBack(i);
+  }
+  try {
+    v.erase(2);
+    return v.getSize() == 4 && v[2] == 3;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool testEraseOutOfRange(const char ** pname) {
+  *pname = __func__;
+  Vector<int> v(2, 10);
+  try {
+    v.erase(5);
+    return false;
+  } catch (const std::out_of_range&) {
+    return true;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool testEraseRange(const char ** pname) {
+  *pname = __func__;
+  Vector<int> v;
+  for (int i = 0; i < 10; ++i) {
+    v.pushBack(i);
+  }
+  try {
+    v.erase(3, 7);
+    return v.getSize() == 6 && v[0] == 0 && v[1] == 1 && v[2] == 2 && v[3] == 7 && v[4] == 8 && v[5] == 9;
+  } catch (...) {
+    return false;
+  }
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
@@ -315,7 +356,10 @@ int main() {
     { testConstAtAccess, "const at() must return const reference" },
     { testInsert, "Insert must add element at specified position" },
     { testInsertOutOfRange, "Insert out of range must throw exception" },
-    { testInsertRange, "Insert range must add multiple elements" }
+    { testInsertRange, "Insert range must add multiple elements" },
+    { testErase, "Erase must remove element at specified position" },
+    { testEraseOutOfRange, "Erase must throw exception when index is out of range" },
+    { testEraseRange, "Erase range must remove elements" }
 };
   constexpr size_t count = sizeof(tests) / sizeof(case_t);
   size_t failed = 0;
